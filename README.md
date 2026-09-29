@@ -45,8 +45,36 @@ git push origin v1.0.0
 
 ## systemd 部署
 
+在 Linux amd64 系统上可使用一键安装脚本安装最新 Release，并自动创建及
+启动 systemd 服务：
+
 ```bash
-sudo useradd --system --no-create-home --shell /usr/sbin/nologin go-http-ping
+curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/install.sh | sudo bash
+```
+
+如需安装指定版本：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/install.sh | sudo VERSION=v1.0.0 bash
+```
+
+默认监听 `0.0.0.0:8080`。安装完成后可通过以下命令检查：
+
+```bash
+systemctl status go-http-ping
+curl http://127.0.0.1:8080/ping
+```
+
+一键卸载服务、程序及专用系统用户：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/uninstall.sh | sudo bash
+```
+
+也可以手动部署：
+
+```bash
+sudo useradd --system --user-group --no-create-home --shell /usr/sbin/nologin go-http-ping
 sudo install -m 0755 dist/go-http-ping-linux-amd64 /usr/local/bin/go-http-ping
 sudo install -m 0644 deploy/go-http-ping.service /etc/systemd/system/go-http-ping.service
 sudo systemctl daemon-reload
