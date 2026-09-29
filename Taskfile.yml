@@ -1,0 +1,38 @@
+version: "3"
+
+vars:
+  APP: go-http-ping
+  DIST: dist
+
+tasks:
+  default:
+    desc: 构建所有平台
+    deps: [build]
+
+  build:
+    desc: 构建 Linux 和 Windows 64 位程序
+    deps: [build:linux, build:windows]
+
+  build:linux:
+    desc: 构建 Linux amd64
+    env:
+      CGO_ENABLED: "0"
+      GOOS: linux
+      GOARCH: amd64
+    cmds:
+      - go build -trimpath -ldflags="-s -w" -o {{.DIST}}/{{.APP}}-linux-amd64 .
+
+  build:windows:
+    desc: 构建 Windows amd64
+    env:
+      CGO_ENABLED: "0"
+      GOOS: windows
+      GOARCH: amd64
+    cmds:
+      - go build -trimpath -ldflags="-s -w" -o {{.DIST}}/{{.APP}}-windows-amd64.exe .
+
+  clean:
+    desc: 清理构建产物
+    cmds:
+      - go clean
+      - rm -rf {{.DIST}}
