@@ -5,7 +5,9 @@ set -Eeuo pipefail
 readonly SERVICE_NAME="go-http-ping"
 readonly SERVICE_USER="go-http-ping"
 readonly SERVICE_GROUP="go-http-ping"
-readonly INSTALL_PATH="/usr/local/bin/go-http-ping"
+readonly INSTALL_DIRECTORY="/opt/go-http-ping"
+readonly INSTALL_PATH="${INSTALL_DIRECTORY}/go-http-ping"
+readonly LEGACY_INSTALL_PATH="/usr/local/bin/go-http-ping"
 readonly SERVICE_PATH="/etc/systemd/system/go-http-ping.service"
 
 log() {
@@ -50,6 +52,15 @@ fi
 if [[ -f "${INSTALL_PATH}" ]]; then
   log "删除程序 ${INSTALL_PATH}"
   rm -f -- "${INSTALL_PATH}"
+fi
+
+if [[ -d "${INSTALL_DIRECTORY}" ]] && rmdir -- "${INSTALL_DIRECTORY}" 2>/dev/null; then
+  log "删除空安装目录 ${INSTALL_DIRECTORY}"
+fi
+
+if [[ -f "${LEGACY_INSTALL_PATH}" ]]; then
+  log "删除旧版本程序 ${LEGACY_INSTALL_PATH}"
+  rm -f -- "${LEGACY_INSTALL_PATH}"
 fi
 
 if id -u "${SERVICE_USER}" >/dev/null 2>&1; then

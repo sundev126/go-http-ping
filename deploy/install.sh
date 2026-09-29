@@ -6,7 +6,9 @@ readonly REPOSITORY="sundev126/go-http-ping"
 readonly SERVICE_NAME="go-http-ping"
 readonly SERVICE_USER="go-http-ping"
 readonly BINARY_NAME="go-http-ping-linux-amd64"
-readonly INSTALL_PATH="/usr/local/bin/go-http-ping"
+readonly INSTALL_DIRECTORY="/opt/go-http-ping"
+readonly INSTALL_PATH="${INSTALL_DIRECTORY}/go-http-ping"
+readonly LEGACY_INSTALL_PATH="/usr/local/bin/go-http-ping"
 readonly SERVICE_PATH="/etc/systemd/system/go-http-ping.service"
 readonly VERSION="${VERSION:-latest}"
 
@@ -72,7 +74,13 @@ if systemctl is-active --quiet "${SERVICE_NAME}.service"; then
 fi
 
 log "安装程序到 ${INSTALL_PATH}"
+install -d -m 0755 "${INSTALL_DIRECTORY}"
 install -m 0755 "${download_path}" "${INSTALL_PATH}"
+
+if [[ -f "${LEGACY_INSTALL_PATH}" ]]; then
+  log "删除旧版本程序 ${LEGACY_INSTALL_PATH}"
+  rm -f -- "${LEGACY_INSTALL_PATH}"
+fi
 
 log "安装 systemd 服务"
 install -m 0644 /dev/stdin "${SERVICE_PATH}" <<'EOF'
@@ -85,7 +93,7 @@ Wants=network-online.target
 Type=simple
 User=go-http-ping
 Group=go-http-ping
-ExecStart=/usr/local/bin/go-http-ping -ip 0.0.0.0 -port 8080
+ExecStart=/opt/go-http-ping/go-http-ping -ip 0.0.0.0 -port 47986
 Restart=on-failure
 RestartSec=3s
 NoNewPrivileges=true
@@ -102,4 +110,4 @@ systemctl enable --now "${SERVICE_NAME}.service"
 
 log "安装完成"
 systemctl --no-pager --full status "${SERVICE_NAME}.service" || true
-log "访问地址: http://127.0.0.1:8080/ping"
+log "访问地址: http://127.0.0.1:47986/ping"

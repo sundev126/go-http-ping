@@ -5,17 +5,17 @@
 ## 本地运行
 
 ```bash
-go run . -ip 127.0.0.1 -port 8080
-curl http://127.0.0.1:8080/ping
+go run . -ip 127.0.0.1 -port 47986
+curl http://127.0.0.1:47986/ping
 
 # 自定义返回内容
-go run . -ip 127.0.0.1 -port 8080 -response "pong"
+go run . -ip 127.0.0.1 -port 47986 -response "pong"
 ```
 
 参数：
 
 - `-ip`：监听 IP，默认 `0.0.0.0`
-- `-port`：监听端口，默认 `8080`，有效范围 `1-65535`
+- `-port`：监听端口，默认 `47986`，有效范围 `1-65535`
 - `-response`：访问 `/ping` 时返回的内容，默认 `ok`
 
 ## 构建
@@ -58,11 +58,12 @@ curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/
 curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/install.sh | sudo VERSION=v1.0.0 bash
 ```
 
-默认监听 `0.0.0.0:8080`。安装完成后可通过以下命令检查：
+程序默认安装到 `/opt/go-http-ping/go-http-ping`，监听
+`0.0.0.0:47986`。安装完成后可通过以下命令检查：
 
 ```bash
 systemctl status go-http-ping
-curl http://127.0.0.1:8080/ping
+curl http://127.0.0.1:47986/ping
 ```
 
 一键卸载服务、程序及专用系统用户：
@@ -75,7 +76,8 @@ curl -fsSL https://raw.githubusercontent.com/sundev126/go-http-ping/main/deploy/
 
 ```bash
 sudo useradd --system --user-group --no-create-home --shell /usr/sbin/nologin go-http-ping
-sudo install -m 0755 dist/go-http-ping-linux-amd64 /usr/local/bin/go-http-ping
+sudo install -d -m 0755 /opt/go-http-ping
+sudo install -m 0755 dist/go-http-ping-linux-amd64 /opt/go-http-ping/go-http-ping
 sudo install -m 0644 deploy/go-http-ping.service /etc/systemd/system/go-http-ping.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now go-http-ping

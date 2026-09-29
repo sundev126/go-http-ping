@@ -26,7 +26,7 @@ func main() {
 
 func run() error {
 	ip := flag.String("ip", "0.0.0.0", "监听 IP 地址")
-	port := flag.Int("port", 8080, "监听端口")
+	port := flag.Int("port", 47986, "监听端口")
 	response := flag.String("response", "ok", "访问 /ping 时返回的内容")
 	flag.Parse()
 
